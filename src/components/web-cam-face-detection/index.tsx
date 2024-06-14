@@ -40,10 +40,7 @@ const WebcamDemo: React.FC<IProps> = ({
 
       const options: RecordRTC.Options = {
         type: 'audio',
-        mimeType: 'audio/webm;codecs=pcm',
-        bitsPerSecond: 200000,
-        bufferSize: 512,
-        numberOfAudioChannels: 1,
+        mimeType: 'audio/wav',
       };
 
       recorderRef.current = new RecordRTC(stream, options);

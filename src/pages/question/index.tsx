@@ -9,7 +9,7 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom';
-// import { v1 as uuidv1 } from 'uuid';
+import { v1 as uuidv1 } from 'uuid';
 import { Footer, Layout } from '@/container';
 import { VideoBottomBar, VideoSkeleton } from '@/components';
 // import { supabase } from '@/utils/supabase';
@@ -17,6 +17,8 @@ import { VideoBottomBar, VideoSkeleton } from '@/components';
 import useFetch from '@/hooks/useFetch';
 import VideoPlayer from '@/components/video-player';
 import CompatibleWebcam from '@/components/web-cam-face-detection/web';
+import toastAlert from '@/utils/toastAlert';
+import { supabase } from '@/utils/supabase';
 
 const Question: React.FC = () => {
   const { data: videoQuestions, isLoading } = useFetch('video_questions');
@@ -46,78 +48,77 @@ const Question: React.FC = () => {
   const blocker = useBlocker(true);
 
   const handleNext = async () => {
-    setIsSubmitting(false);
-    console.log('fdafda', setCurrentIndex);
-    // setIsSubmitting(true);
-    // const blob = new Blob(recordedChunks, {
-    //   type: 'video/webm;codecs=vp8',
-    // });
-    // const { data: videoUploadResponse, error } = await supabase.storage
-    //   .from('videos/uploads')
-    //   .upload(`${uuidv1()}.webm`, blob);
-    // if (videoUploadResponse) {
-    //   if (!state?.userId) {
-    //     navigate('/form');
-    //     return;
-    //   }
-    //   const { data: videoResponse, error: videoResponseError } = await supabase
-    //     .from('video_responses')
-    //     .insert([
-    //       {
-    //         // @ts-ignore
-    //         response_video_url: videoUploadResponse?.fullPath,
-    //         question_id: videoQuestions[currentIndex]?.id,
-    //         user_id: state?.userId,
-    //         should_block_face: blockface,
-    //       },
-    //     ])
-    //     .select();
-    //   if (videoResponseError) {
-    //     setIsSubmitting(false);
-    //     toastAlert('error', videoResponseError.message + blob.size);
-    //   }
-    //   if (videoResponse) {
-    //     try {
-    //       const data: Response = await fetch(
-    //         `${import.meta.env.VITE_APP_API_BASE_URL}/video-transcribe/`,
-    //         {
-    //           method: 'POST',
-    //           body: JSON.stringify({
-    //             video_response_id: videoResponse[0]?.id,
-    //           }),
-    //         }
-    //       );
-    //       if (data?.status !== 200) {
-    //         toastAlert('error', 'Something went wrong');
-    //         setIsSubmitting(false);
-    //       }
-    //       if (data?.status === 200) {
-    //         setIsSubmitting(false);
-    //         setRecordedChunks([]);
-    //         setCapturing(false);
-    //         setShowRecordingScreen(false);
-    //         setIsFinishedRecording(false);
-    //         setStep(1);
-    //         setIsSubmitting(false);
-    //         setIsPlaying(false);
-    //         setCurrentIndex(
-    //           (prevIndex: number) => (prevIndex + 1) % videoQuestions.length
-    //         );
-    //         if (currentIndex + 1 === videoQuestions?.length) {
-    //           window.location.href = '/thank-you';
-    //         }
-    //         setIsSubmitting(false);
-    //       }
-    //     } catch (err: any) {
-    //       setIsSubmitting(false);
-    //       toastAlert('error', err);
-    //     }
-    //   }
-    // }
-    // if (error) {
-    //   toastAlert('error', error.message);
-    //   setIsSubmitting(false);
-    // }
+    setIsSubmitting(true);
+    const blob = new Blob(recordedChunks, {
+      type: 'audio/wav',
+    });
+    const { data: videoUploadResponse, error } = await supabase.storage
+      .from('audio/uploads')
+      .upload(`${uuidv1()}.wav`, blob);
+    console.log('🚀 ~ handleNext ~ videoUploadResponse:', videoUploadResponse);
+    if (videoUploadResponse) {
+      if (!state?.userId) {
+        navigate('/form');
+        return;
+      }
+      const { data: videoResponse, error: videoResponseError } = await supabase
+        .from('video_responses')
+        .insert([
+          {
+            // @ts-ignore
+            response_video_url: videoUploadResponse?.fullPath,
+            question_id: videoQuestions[currentIndex]?.id,
+            user_id: state?.userId,
+            should_block_face: blockface,
+          },
+        ])
+        .select();
+      if (videoResponseError) {
+        setIsSubmitting(false);
+        toastAlert('error', videoResponseError.message + blob.size);
+      }
+      if (videoResponse) {
+        try {
+          const data: Response = await fetch(
+            `${import.meta.env.VITE_APP_API_BASE_URL}/video-transcribe/`,
+            {
+              method: 'POST',
+              body: JSON.stringify({
+                video_response_id: videoResponse[0]?.id,
+              }),
+            }
+          );
+          if (data?.status !== 200) {
+            toastAlert('error', 'Something went wrong');
+            setIsSubmitting(false);
+          }
+          if (data?.status === 200) {
+            setIsSubmitting(false);
+            setRecordedChunks([]);
+            setCapturing(false);
+            setShowRecordingScreen(false);
+            setIsFinishedRecording(false);
+            setStep(1);
+            setIsSubmitting(false);
+            setIsPlaying(false);
+            setCurrentIndex(
+              (prevIndex: number) => (prevIndex + 1) % videoQuestions.length
+            );
+            if (currentIndex + 1 === videoQuestions?.length) {
+              window.location.href = '/thank-you';
+            }
+            setIsSubmitting(false);
+          }
+        } catch (err: any) {
+          setIsSubmitting(false);
+          toastAlert('error', err);
+        }
+      }
+    }
+    if (error) {
+      toastAlert('error', error.message);
+      setIsSubmitting(false);
+    }
   };
 
   const handleShowRecordingScreen = () => {
