@@ -47,7 +47,7 @@ const WebcamDemo: React.FC<IProps> = ({
 
       const options: RecordRTC.Options = {
         type: 'audio',
-        mimeType: 'audio/wav',
+        mimeType: 'audio/ogg',
       };
 
       recorderRef.current = new RecordRTC(stream, options);
@@ -150,9 +150,9 @@ const WebcamDemo: React.FC<IProps> = ({
         <button
           onClick={handleStopCaptureClick}
           aria-label="stop"
-          className="relative flex h-20 w-20 items-center justify-center rounded-full bg-[#334256]"
+          className="relative flex h-20 w-20 items-center justify-center rounded-full"
         >
-          <FaMicrophone size={30} color="#fff" className="mx-auto" />
+          <FaMicrophone size={30} color="#334256" className="mx-auto" />
           <div
             className="absolute inset-0 rounded-full"
             style={{

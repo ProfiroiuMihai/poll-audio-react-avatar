@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import * as React from 'react';
@@ -16,7 +14,7 @@ import { VideoBottomBar, VideoSkeleton } from '@/components';
 // import toastAlert from '@/utils/toastAlert';
 import useFetch from '@/hooks/useFetch';
 import VideoPlayer from '@/components/video-player';
-import CompatibleWebcam from '@/components/web-cam-face-detection/web';
+import CompatibleWebcam from '@/components/audio-record';
 import toastAlert from '@/utils/toastAlert';
 import { supabase } from '@/utils/supabase';
 
@@ -54,8 +52,7 @@ const Question: React.FC = () => {
     });
     const { data: videoUploadResponse, error } = await supabase.storage
       .from('audio/uploads')
-      .upload(`${uuidv1()}.wav`, blob);
-    console.log('🚀 ~ handleNext ~ videoUploadResponse:', videoUploadResponse);
+      .upload(`${uuidv1()}.ogg`, blob);
     if (videoUploadResponse) {
       if (!state?.userId) {
         navigate('/form');
@@ -111,7 +108,7 @@ const Question: React.FC = () => {
           }
         } catch (err: any) {
           setIsSubmitting(false);
-          toastAlert('error', err);
+          toastAlert('error', 'something went wrong');
         }
       }
     }

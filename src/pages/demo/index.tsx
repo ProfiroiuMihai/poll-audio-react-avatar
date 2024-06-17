@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import { Footer, Layout } from '@/container';
 import { VideoBottomBar, VideoPlayer } from '@/components';
-import CompatibleWebcam from '@/components/web-cam-face-detection/web';
+import CompatibleWebcam from '@/components/audio-record';
 
 const Demo: React.FC = () => {
   const [showRecordingScreen, setShowRecordingScreen] =
