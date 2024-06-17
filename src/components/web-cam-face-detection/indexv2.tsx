@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable jsx-a11y/media-has-caption */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable jsx-a11y/media-has-caption */
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import React, { useRef, useState, useEffect, useCallback } from 'react';
+import { FaMicrophone } from 'react-icons/fa';
 
 interface IProps {
   capturing: boolean;
@@ -27,6 +27,7 @@ const WebcamDemoForIosDevices: React.FC<IProps> = ({
 }) => {
   const [timer, setTimer] = useState(0);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const [soundLevel, setSoundLevel] = useState(0);
 
   const handleDataAvailable = ({ data }: any) => {
     if (data.size > 0) {
@@ -38,6 +39,7 @@ const WebcamDemoForIosDevices: React.FC<IProps> = ({
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       setCapturing(true);
+
       mediaRecorderRef.current = new MediaRecorder(stream);
       mediaRecorderRef.current.addEventListener(
         'dataavailable',
@@ -45,6 +47,24 @@ const WebcamDemoForIosDevices: React.FC<IProps> = ({
       );
       mediaRecorderRef.current.start();
       setTimer(0);
+
+      const audioContext = new AudioContext();
+      const source = audioContext.createMediaStreamSource(stream);
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 256;
+      source.connect(analyser);
+
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+      const analyzeSound = () => {
+        analyser.getByteFrequencyData(dataArray);
+        const sum = dataArray.reduce((a, b) => a + b, 0);
+        const average = sum / dataArray.length;
+        setSoundLevel(average);
+        requestAnimationFrame(analyzeSound);
+      };
+
+      analyzeSound();
     } catch (error) {
       setCapturing(false);
     }
@@ -80,17 +100,12 @@ const WebcamDemoForIosDevices: React.FC<IProps> = ({
 
   return isFinishedRecording ? (
     <div
-      className="relative h-[90%] cursor-pointer"
+      className="flex h-[90%] flex-col items-center justify-center"
       role="button"
       tabIndex={0}
       aria-hidden="true"
     >
-      <audio
-        autoPlay
-        className="h-full w-full rounded-xl object-cover"
-        controls
-        controlsList="nodownload"
-      >
+      <audio className="" controls controlsList="nodownload">
         <source
           src={URL.createObjectURL(
             new Blob(recordedChunks, { type: 'audio/webm' })
@@ -104,39 +119,39 @@ const WebcamDemoForIosDevices: React.FC<IProps> = ({
       </audio>
     </div>
   ) : (
-    <div className="relative h-[90%]">
-      <div className="absolute bottom-2 w-full px-4">
-        <div>
-          {capturing && (
-            <p className="mx-auto w-28 rounded-full bg-warning px-3 py-1 text-center text-sm font-bold text-white">
-              00:{timer < 10 ? `0${timer}` : timer} / 00:45
-            </p>
-          )}
-          <div className="flex items-center justify-between gap-5">
-            <div />
+    <div className="flex h-[90%] flex-col items-center justify-center">
+      {capturing ? (
+        <button
+          onClick={handleStopCaptureClick}
+          aria-label="stop"
+          className="relative flex h-20 w-20 items-center justify-center rounded-full bg-[#334256]"
+        >
+          <FaMicrophone size={30} color="#fff" className="mx-auto" />
+          <div
+            className="absolute inset-0 rounded-full"
+            style={{
+              boxShadow: `0 0 ${soundLevel / 2}px ${soundLevel / 2}px #808080bf`,
+            }}
+          />
+        </button>
+      ) : (
+        <button
+          onClick={handleStartCaptureClick}
+          aria-label="start"
+          className="flex h-20 w-20 items-center justify-center rounded-full bg-[#334256]"
+        >
+          <FaMicrophone size={30} color="#fff" className="mx-auto" />
+        </button>
+      )}
 
-            <div className="">
-              {capturing ? (
-                <button
-                  onClick={handleStopCaptureClick}
-                  aria-label="stop"
-                  className={capturing ? 'mr-8' : ''}
-                >
-                  <div className="h-16 w-16 rounded-full border-2 border-white">
-                    <div className="mx-auto mt-4 h-7 w-7 rounded bg-warning" />
-                  </div>
-                </button>
-              ) : (
-                <button onClick={handleStartCaptureClick} aria-label="start">
-                  <div className="h-16 w-16 rounded-full border-4 border-white">
-                    <div className="mx-auto mt-[1.3px] h-[54px] w-[54px] rounded-full bg-warning" />
-                  </div>
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+      {capturing ? (
+        <p className="mt-10 font-semibold text-secondary">
+          00:{timer < 10 ? `0${timer}` : timer} : 00:45
+        </p>
+      ) : (
+        <p className="mt-10 opacity-0">dfddfas</p>
+      )}
+
       {capturing ? (
         <p className="mt-10 text-center text-secondary">
           Apasă STOP pentru a încheia
