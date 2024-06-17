@@ -127,8 +127,17 @@ const WebcamDemo: React.FC<IProps> = ({
 
   return isFinishedRecording ? (
     <div className="flex h-[90%] flex-col items-center justify-center">
+      hello
       {recordedChunks.length > 0 ? (
-        <audio autoPlay={false} controls controlsList="nodownload">
+        <audio
+          autoPlay={false}
+          controls
+          controlsList="nodownload"
+          onPlay={(e) => {
+            const audio = e.target as HTMLAudioElement;
+            audio.currentTime = 0;
+          }}
+        >
           <source
             src={URL.createObjectURL(recordedChunks[recordedChunks.length - 1])}
             type="audio/webm"
