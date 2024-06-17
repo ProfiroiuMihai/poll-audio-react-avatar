@@ -145,7 +145,7 @@ const WebcamDemo: React.FC<IProps> = ({
       )}
     </div>
   ) : (
-    <div className="flex h-[90%] flex-col items-center justify-center">
+    <div className="mt-[45%] flex h-[90%] flex-col items-center justify-center">
       {capturing ? (
         <button
           onClick={handleStopCaptureClick}
