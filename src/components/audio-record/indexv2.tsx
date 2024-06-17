@@ -38,10 +38,16 @@ const WebcamDemoForIosDevices: React.FC<IProps> = ({
 
   const handleStartCaptureClick = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          channelCount: 2,
+          autoGainControl: false,
+          echoCancellation: true,
+          noiseSuppression: false,
+        },
+      });
       setCapturing(true);
-      mediaStreamRef.current = stream; // Store the media stream
-
+      mediaStreamRef.current = stream;
       mediaRecorderRef.current = new MediaRecorder(stream);
       mediaRecorderRef.current.addEventListener(
         'dataavailable',
@@ -78,8 +84,6 @@ const WebcamDemoForIosDevices: React.FC<IProps> = ({
       setIsFinishedRecording(true);
       setCapturing(false);
       setStep(step + 1);
-
-      // Stop the media stream to release the microphone
       if (mediaStreamRef.current) {
         mediaStreamRef.current.getTracks().forEach((track) => track.stop());
         mediaStreamRef.current = null;

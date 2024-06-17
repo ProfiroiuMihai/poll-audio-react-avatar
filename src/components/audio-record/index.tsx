@@ -44,7 +44,14 @@ const WebcamDemo: React.FC<IProps> = ({
 
   const handleStartCaptureClick = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          channelCount: 2,
+          autoGainControl: false,
+          echoCancellation: true,
+          noiseSuppression: false,
+        },
+      });
       setCapturing(true);
       mediaStreamRef.current = stream;
 

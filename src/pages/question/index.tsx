@@ -14,7 +14,7 @@ import { VideoBottomBar, VideoSkeleton } from '@/components';
 // import toastAlert from '@/utils/toastAlert';
 import useFetch from '@/hooks/useFetch';
 import VideoPlayer from '@/components/video-player';
-import CompatibleWebcam from '@/components/audio-record';
+import CompatibleWebcam from '@/components/audio-record/web';
 import toastAlert from '@/utils/toastAlert';
 import { supabase } from '@/utils/supabase';
 
