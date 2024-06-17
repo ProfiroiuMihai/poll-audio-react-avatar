@@ -29,7 +29,7 @@ const WebcamDemo: React.FC<IProps> = ({
   setStep,
   step,
 }) => {
-  const [timer, setTimer] = useState(0);
+  const [, setTimer] = useState(0);
   const [soundLevel, setSoundLevel] = useState(0);
   const recorderRef: MutableRefObject<RecordRTC | null> =
     useRef<RecordRTC | null>(null);
@@ -39,11 +39,14 @@ const WebcamDemo: React.FC<IProps> = ({
     useRef<AnalyserNode | null>(null);
   const dataArrayRef: MutableRefObject<Uint8Array | null> =
     useRef<Uint8Array | null>(null);
+  const mediaStreamRef: MutableRefObject<MediaStream | null> =
+    useRef<MediaStream | null>(null);
 
   const handleStartCaptureClick = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       setCapturing(true);
+      mediaStreamRef.current = stream;
 
       const options: RecordRTC.Options = {
         type: 'audio',
@@ -98,11 +101,17 @@ const WebcamDemo: React.FC<IProps> = ({
         setCapturing(false);
       }
     }
+
     if (audioContextRef.current) {
       audioContextRef.current.close();
       audioContextRef.current = null;
       analyserRef.current = null;
       dataArrayRef.current = null;
+    }
+
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+      mediaStreamRef.current = null;
     }
   };
 
@@ -111,11 +120,11 @@ const WebcamDemo: React.FC<IProps> = ({
     if (capturing) {
       intervalId = setInterval(() => {
         setTimer((prevTimer) => {
-          if (prevTimer < 44) {
+          if (prevTimer < 179) {
             return prevTimer + 1;
           }
           handleStopCaptureClick();
-          return 45;
+          return 179;
         });
       }, 1000);
     } else {
@@ -127,7 +136,6 @@ const WebcamDemo: React.FC<IProps> = ({
 
   return isFinishedRecording ? (
     <div className="flex h-[90%] flex-col items-center justify-center">
-      hello
       {recordedChunks.length > 0 ? (
         <audio
           autoPlay={false}
@@ -177,14 +185,6 @@ const WebcamDemo: React.FC<IProps> = ({
         >
           <FaMicrophone size={30} color="#fff" className="mx-auto" />
         </button>
-      )}
-
-      {capturing ? (
-        <p className="mt-10 font-semibold text-secondary">
-          00:{timer < 10 ? `0${timer}` : timer} : 00:45
-        </p>
-      ) : (
-        <p className="mt-10 opacity-0">dfddfas</p>
       )}
 
       {capturing ? (
