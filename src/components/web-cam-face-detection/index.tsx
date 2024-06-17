@@ -6,6 +6,7 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import React, { useRef, useState, useEffect, MutableRefObject } from 'react';
 import RecordRTC from 'recordrtc';
+import { FaMicrophone } from 'react-icons/fa';
 
 interface IProps {
   capturing: boolean;
@@ -18,7 +19,6 @@ interface IProps {
   setStep: React.Dispatch<React.SetStateAction<number>>;
 }
 
-// Define the functional component
 const WebcamDemo: React.FC<IProps> = ({
   capturing,
   setCapturing,
@@ -30,8 +30,15 @@ const WebcamDemo: React.FC<IProps> = ({
   step,
 }) => {
   const [timer, setTimer] = useState(0);
+  const [soundLevel, setSoundLevel] = useState(0);
   const recorderRef: MutableRefObject<RecordRTC | null> =
     useRef<RecordRTC | null>(null);
+  const audioContextRef: MutableRefObject<AudioContext | null> =
+    useRef<AudioContext | null>(null);
+  const analyserRef: MutableRefObject<AnalyserNode | null> =
+    useRef<AnalyserNode | null>(null);
+  const dataArrayRef: MutableRefObject<Uint8Array | null> =
+    useRef<Uint8Array | null>(null);
 
   const handleStartCaptureClick = async () => {
     try {
@@ -46,9 +53,27 @@ const WebcamDemo: React.FC<IProps> = ({
       recorderRef.current = new RecordRTC(stream, options);
       recorderRef.current.startRecording();
       setTimer(0);
-      setTimeout(() => {}, 2000);
+
+      audioContextRef.current = new AudioContext();
+      const source = audioContextRef.current.createMediaStreamSource(stream);
+      analyserRef.current = audioContextRef.current.createAnalyser();
+      source.connect(analyserRef.current);
+      analyserRef.current.fftSize = 256;
+      const bufferLength = analyserRef.current.frequencyBinCount;
+      dataArrayRef.current = new Uint8Array(bufferLength);
+
+      const analyzeSound = () => {
+        if (analyserRef.current && dataArrayRef.current) {
+          analyserRef.current.getByteFrequencyData(dataArrayRef.current);
+          const sum = dataArrayRef.current.reduce((a, b) => a + b, 0);
+          const average = sum / dataArrayRef.current.length;
+          setSoundLevel(average);
+          requestAnimationFrame(analyzeSound);
+        }
+      };
+
+      analyzeSound();
     } catch (error) {
-      console.error('Error accessing microphone', error);
       setCapturing(false);
     }
   };
@@ -70,9 +95,14 @@ const WebcamDemo: React.FC<IProps> = ({
           setStep(step + 1);
         });
       } catch (error) {
-        console.error('Error stopping recording', error);
         setCapturing(false);
       }
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
+      analyserRef.current = null;
+      dataArrayRef.current = null;
     }
   };
 
@@ -96,14 +126,9 @@ const WebcamDemo: React.FC<IProps> = ({
   }, [capturing]);
 
   return isFinishedRecording ? (
-    <div className="relative h-[90%] cursor-pointer">
+    <div className="flex h-[90%] flex-col items-center justify-center">
       {recordedChunks.length > 0 ? (
-        <audio
-          autoPlay
-          className="h-full w-full rounded-xl object-cover"
-          controls
-          controlsList="nodownload"
-        >
+        <audio autoPlay={false} controls controlsList="nodownload">
           <source
             src={URL.createObjectURL(recordedChunks[recordedChunks.length - 1])}
             type="audio/webm"
@@ -120,44 +145,39 @@ const WebcamDemo: React.FC<IProps> = ({
       )}
     </div>
   ) : (
-    <div className="relative h-[90%]">
-      <div className="bg-gray-200 flex h-full w-full items-center justify-center">
-        <p className="text-lg">Audio Recorder</p>
-      </div>
-      <div className="absolute bottom-2 w-full px-4">
-        <div>
-          {capturing && (
-            <p className="mx-auto w-28 rounded-full bg-warning px-3 py-1 text-center text-sm font-bold text-white">
-              00:{timer < 10 ? `0${timer}` : timer} / 00:45
-            </p>
-          )}
-          <div className="flex items-center justify-between gap-5">
-            <div className="" />
+    <div className="flex h-[90%] flex-col items-center justify-center">
+      {capturing ? (
+        <button
+          onClick={handleStopCaptureClick}
+          aria-label="stop"
+          className="relative flex h-20 w-20 items-center justify-center rounded-full bg-[#334256]"
+        >
+          <FaMicrophone size={30} color="#fff" className="mx-auto" />
+          <div
+            className="absolute inset-0 rounded-full"
+            style={{
+              boxShadow: `0 0 ${soundLevel / 2}px ${soundLevel / 2}px #808080bf`,
+            }}
+          />
+        </button>
+      ) : (
+        <button
+          onClick={handleStartCaptureClick}
+          aria-label="start"
+          className="flex h-20 w-20 items-center justify-center rounded-full bg-[#334256]"
+        >
+          <FaMicrophone size={30} color="#fff" className="mx-auto" />
+        </button>
+      )}
 
-            <div className="ml-8 mt-2">
-              {capturing ? (
-                <button
-                  onClick={handleStopCaptureClick}
-                  aria-label="stop"
-                  className={capturing ? 'mr-[45px]' : ''}
-                >
-                  <div className="h-16 w-16 rounded-full border-2 border-white">
-                    <div className="mx-auto mt-4 h-7 w-7 rounded bg-warning" />
-                  </div>
-                </button>
-              ) : (
-                <button onClick={handleStartCaptureClick} aria-label="start">
-                  <div className="h-16 w-16 rounded-full border-4 border-white">
-                    <div className="mx-auto mt-[1.3px] h-[54px] w-[54px] rounded-full bg-warning" />
-                  </div>
-                </button>
-              )}
-            </div>
+      {capturing ? (
+        <p className="mt-10 font-semibold text-secondary">
+          00:{timer < 10 ? `0${timer}` : timer} : 00:45
+        </p>
+      ) : (
+        <p className="mt-10 opacity-0">dfddfas</p>
+      )}
 
-            <div className="" />
-          </div>
-        </div>
-      </div>
       {capturing ? (
         <p className="mt-10 text-center text-secondary">
           Apasă STOP pentru a încheia
