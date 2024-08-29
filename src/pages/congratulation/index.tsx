@@ -13,7 +13,7 @@ const Home: React.FC = () => (
       />
     </Layout>
     <Footer>
-      <Link to="/form" className="w-full">
+      <Link to="/" className="w-full">
         <Button
           text="Începe Sondajul"
           type="submit"
