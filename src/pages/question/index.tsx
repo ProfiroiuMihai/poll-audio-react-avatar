@@ -55,7 +55,7 @@ const Question: React.FC = () => {
       .upload(`${uuidv1()}.ogg`, blob);
     if (videoUploadResponse) {
       if (!state?.userId) {
-        navigate('/form');
+        navigate('/');
         return;
       }
       const { data: videoResponse, error: videoResponseError } = await supabase
