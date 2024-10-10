@@ -10,6 +10,7 @@ import {
   Congratulations,
   Form,
   Home,
+  SelectionPage,
   TermsAndCondition,
   Thankyou,
 } from './pages';
@@ -26,6 +27,7 @@ const App: React.FC = () => {
         <Route path="/congratulation" element={<Congratulations />} />
         <Route path="/terms-conditions" element={<TermsAndCondition />} />
         <Route path="/thank-you" element={<Thankyou />} />
+        <Route path="/choose" element={<SelectionPage />} />
       </Route>
     )
   );

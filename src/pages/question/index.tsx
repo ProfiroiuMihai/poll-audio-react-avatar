@@ -10,8 +10,6 @@ import {
 import { v1 as uuidv1 } from 'uuid';
 import { Footer, Layout } from '@/container';
 import { VideoBottomBar, VideoSkeleton } from '@/components';
-// import { supabase } from '@/utils/supabase';
-// import toastAlert from '@/utils/toastAlert';
 import useFetch from '@/hooks/useFetch';
 import VideoPlayer from '@/components/video-player';
 import CompatibleWebcam from '@/components/audio-record/web';
@@ -32,6 +30,13 @@ const Question: React.FC = () => {
   const [endVideo, setEndVideo] = React.useState(false);
   const navigate: NavigateFunction = useNavigate();
   const { state } = useLocation();
+
+  const filterQuestion =
+    videoQuestions?.length > 0
+      ? videoQuestions?.filter(
+          (item: { type: string }) => item?.type === state?.selectionId
+        )
+      : [];
 
   React.useEffect(() => {
     if (!state?.userId) {
@@ -64,7 +69,7 @@ const Question: React.FC = () => {
           {
             // @ts-ignore
             response_video_url: videoUploadResponse?.fullPath,
-            question_id: videoQuestions[currentIndex]?.id,
+            question_id: filterQuestion[currentIndex]?.id,
             user_id: state?.userId,
             should_block_face: blockface,
           },
@@ -99,9 +104,9 @@ const Question: React.FC = () => {
             setIsSubmitting(false);
             setIsPlaying(false);
             setCurrentIndex(
-              (prevIndex: number) => (prevIndex + 1) % videoQuestions.length
+              (prevIndex: number) => (prevIndex + 1) % filterQuestion.length
             );
-            if (currentIndex + 1 === videoQuestions?.length) {
+            if (currentIndex + 1 === filterQuestion?.length) {
               window.location.href = '/thank-you';
             }
             setIsSubmitting(false);
@@ -143,7 +148,6 @@ const Question: React.FC = () => {
             <VideoSkeleton />
           ) : showRecordingScreen ? (
             <CompatibleWebcam
-              // blockFace={blockface}
               capturing={capture}
               setCapturing={setCapturing}
               isFinishedRecording={isFinishedRecording}
@@ -156,8 +160,8 @@ const Question: React.FC = () => {
           ) : (
             <VideoPlayer
               url={
-                videoQuestions &&
-                videoQuestions[currentIndex]?.question_video_url
+                filterQuestion &&
+                filterQuestion[currentIndex]?.question_video_url
               }
               setIsPlaying={setIsPlaying}
               onEnded={(end) => setEndVideo(end)}

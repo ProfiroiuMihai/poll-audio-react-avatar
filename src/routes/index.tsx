@@ -2,10 +2,10 @@
 import {
   AgeError,
   Congratulations,
-  // Demo,
   Form,
   Home,
   Question,
+  SelectionPage,
   TermsAndCondition,
   Thankyou,
 } from '@/pages';
@@ -33,11 +33,6 @@ const routesData = [
     path: '/form',
     element: <Form />,
   },
-  // {
-  //   id: 4,
-  //   path: '/demo',
-  //   element: <Demo />,
-  // },
   {
     id: 5,
     path: '/congratulation',
@@ -52,6 +47,11 @@ const routesData = [
     id: 7,
     path: '/thank-you',
     element: <Thankyou />,
+  },
+  {
+    id: 8,
+    path: '/select',
+    element: <SelectionPage />,
   },
 ];
 
