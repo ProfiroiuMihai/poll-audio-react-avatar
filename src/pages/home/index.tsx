@@ -1,12 +1,37 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import * as React from 'react';
 import { Button, VideoPlayer, VideoSkeleton } from '@/components';
 import { Footer, Layout } from '@/container';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useFetch from '@/hooks/useFetch';
+import { supabase } from '@/utils/supabase';
+import toastAlert from '@/utils/toastAlert';
 
 const Home: React.FC = () => {
   const { data: introData, isLoading } = useFetch('polls');
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isPlaying, setIsPlaying] = React.useState(false);
+
+  const handleSubmit = async () => {
+    const { data, error } = await supabase
+      .from('user')
+      .insert({
+        birthdate: '',
+        location: '',
+        education: '',
+        sex: '',
+      })
+      .select();
+    if (data) {
+      setIsSubmitting(false);
+      navigate('/question', { state: { userId: data[0]?.id } });
+    }
+    if (error) {
+      toastAlert('error', 'Something went wrong');
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <>
@@ -26,14 +51,14 @@ const Home: React.FC = () => {
       </Layout>
       <Footer>
         <h6 className="text-center font-bold">
-          <Link to="/form" className="w-full">
-            <Button
-              text="Începe sondajul"
-              type="submit"
-              variant="primary"
-              className="px-4 py-2"
-            />
-          </Link>
+          <Button
+            text="Începe sondajul"
+            type="submit"
+            variant="primary"
+            className="w-full px-4 py-2"
+            onClick={handleSubmit}
+            isSubmitting={isSubmitting}
+          />
         </h6>
       </Footer>
     </>
