@@ -106,7 +106,7 @@ const Form: React.FC = () => {
       .select();
     if (data) {
       clearFormValues();
-      navigate('/question', { state: { userId: data[0]?.id } });
+      navigate('/choose', { state: { userId: data[0]?.id } });
     }
     if (error) {
       toastAlert('error', 'Something went wrong');
