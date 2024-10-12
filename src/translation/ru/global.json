@@ -1,0 +1,63 @@
+{
+  "home": {
+    "header": "Добро пожаловать!",
+    "subHeader": "Инструкции",
+    "btnText": "Начинаем опрос"
+  },
+  "form": {
+    "header": "Форма",
+    "placeholder": {
+      "dob": "Дата рождения",
+      "dobError": "Требуется дата рождения",
+      "dobFormatError": "Дата рождения должна быть в формате дд-мм-гггг.",
+      "locationError": "Требуется город",
+      "location": "В каком населенном пункте ваше место жительства, указанное в удостоверении личности?",
+      "gender": "Какой ваш пол, как указано в удостоверении личности?",
+      "education": "Какой у вас самый высокий уровень образования?",
+      "acceptConditions": "Declar că sunt de acord cu înregistrarea răspunsurilor mele text și video și cu prelucrarea datelor mele personale în scopul extragerii informațiilor necesare sondajului. Am citit și înțeles termenii și condițiile și politica de confidențialitate ale INTERSPECT.",
+      "terms": "Условия использования INTERSPECT",
+      "select": "Выберите"
+    },
+    "btn": {
+      "left": "Назад",
+      "right": "Отправить"
+    }
+  },
+  "errorPage": "Минимальный возраст для участия в этом опросе — 18 лет.",
+  "choose": {
+    "header": "Планируете ли вы 20 октября принять участие в президентских выборах и референдуме?",
+    "btnText": "Продолжать"
+  },
+  "question": {
+    "header": "вопрос",
+    "buttonText": "Ответить",
+    "next": "Отправлять",
+    "skip": "пропустить"
+  },
+  "record": {
+    "header": "вопрос",
+    "recordBtnText": "Нажмите кнопку, чтобы ответить голосом",
+    "recordStopBtnText": "Нажмите, чтобы прослушать ответ"
+  },
+  "previewRecord": {
+    "btnOne": "Перезаписать",
+    "btnTwo": "Следующий вопрос"
+  },
+  "terms-and-conditions": {
+    "termsTitle": "Условия использования INTERSPECT",
+    "termBottomTitle": "",
+    "privacyTitle": "Политика конфиденциальности INTERSPECT",
+    "bottomText": "Эта Политика конфиденциальности регулируется законами Румынии, в частности Законом № 190/2018 о мерах по применению Регламента (ЕС) 2016/679 и Законом № 506/2004 о защите персональных данных и конфиденциальности в секторе электронных коммуникаций. Любые споры будут разрешаться компетентными судами Румынии."
+  },
+  "exitModal": {
+    "title": "Внимание!",
+    "subTitle": "Переход назад удалит все ответы! Для продолжения нажмите «Продолжить опрос».",
+    "btnLeft": "Закрыть опрос",
+    "btnRight": "Продолжить опрос"
+  },
+
+  "congratulation": {
+    "title": "Поздравляем!",
+    "subTitle": "Опрос завершен!"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "home": {
+    "header": "Bun venit!",
+    "subHeader": "Instrucțiuni",
+    "btnText": "Incepe sondajul"
+  },
+  "form": {
+    "header": "Formular",
+    "placeholder": {
+      "dob": "Data nașterii",
+      "dobFormatError": "Data nașterii trebuie să fie în formatul zz-ll-aaaa",
+      "dobError": "Data nașterii trebuie să fie în formatul zz-ll-aaaa",
+      "locationError": "Localitatea este necesară",
+      "location": "În ce localitate este domiciliul dumneavoastră din cartea de identitate?",
+      "gender": "Care este sexul dumneavoastră, așa cum este trecut în cartea de identitate?",
+      "education": "Care este cea mai înaltă formă de educație absolvită?",
+      "acceptConditions": "Declar că sunt de acord cu înregistrarea răspunsurilor mele text și video și cu prelucrarea datelor mele personale în scopul extragerii informațiilor necesare sondajului. Am citit și înțeles termenii și condițiile și politica de confidențialitate ale INTERSPECT.",
+      "terms": "Termeni și Condiții pentru INTERSPECT",
+      "select": "Selectează"
+    },
+    "btn": {
+      "left": "Înapoi",
+      "right": "Trimite"
+    }
+  },
+  "errorPage": "Vârsta minimă necesară pentru a completa acest sondaj este de 18 ani.",
+  "choose": {
+    "header": "În data de 20 octombrie, intenționați să participați la vot la alegerile prezidențiale și la referendum?",
+    "btnText": "Continuă"
+  },
+  "question": {
+    "header": "Întrebare",
+    "buttonText": "Răspunde",
+    "next": "Trimite",
+    "skip": "Omite"
+  },
+  "record": {
+    "header": "Întrebare",
+    "recordBtnText": "Apasă butonul pentru a răspunde vocal",
+    "recordStopBtnText": "Apasă pentru a asculta răspunsul"
+  },
+  "previewRecord": {
+    "btnOne": "Reînregistrează",
+    "btnTwo": "Întrebarea următoare"
+  },
+  "terms-and-conditions": {
+    "termsTitle": "Termeni și Condiții pentru INTERSPECT",
+    "termBottomTitle": "Acești Termeni și Condiții sunt guvernați de legile din România. Orice litigii vor fi soluționate de instanțele competente din România.",
+    "privacyTitle": "Politica de Confidențialitate INTERSPECT",
+    "bottomText": "Această Politică de Confidențialitate este guvernată de legile din România, în special de Legea nr. 190/2018 privind măsuri de punere în aplicare a Regulamentului (UE) 2016/679 și de Legea nr. 506/2004 privind prelucrarea datelor cu caracter personal și protecția vieții private în sectorul comunicațiilor electronice. Orice litigii vor fi soluționate de instanțele competente din România.”"
+  },
+  "exitModal": {
+    "title": "Atenție!",
+    "subTitle": " Navigarea înapoi va șterge toate răspunsurile! Pentru a continua apăsați “Continuă sondajul”.",
+    "btnLeft": "Închide sondajul",
+    "btnRight": "Continuă sondajul"
+  },
+
+  "congratulation": {
+    "title": "Felicitări!",
+    "subTitle": "Sondajul a fost încheiat!"
+  }
+}
